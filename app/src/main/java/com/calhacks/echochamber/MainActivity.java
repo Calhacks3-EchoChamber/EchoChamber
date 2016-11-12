@@ -30,10 +30,7 @@ import java.net.URLConnection;
 
 public class MainActivity extends Activity {
     private static final String TAG = "MainActivity";
-    private String[] drawerItems = new String[]{"Topics", "Messages", "Settings", "Log Out"};
-    private DrawerLayout drawerLayout;
-    private ListView drawerList;
-    private ActionBarDrawerToggle drawerToggle;
+    private NavigationDrawer navigationDrawer;
     private ImageView profilePic;
     private TextView profileName;
 
@@ -42,118 +39,33 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerList = (ListView) findViewById(R.id.nav_drawer);
-
-        // Adapter for Nav Drawer ListView
-        drawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, drawerItems));
-
-        // Set list click listener
-        drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.d(TAG, "Clicked: " + drawerItems[i]);
-                if (drawerItems[i].equals("Log Out")) {
-                    logOut();
-                }
-            }
-        });
-
-        drawerToggle = new ActionBarDrawerToggle(
-                this,
-                drawerLayout,
-                R.drawable.ic_drawer,
-                R.string.drawer_open,
-                R.string.drawer_close
-        ) {
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-                getActionBar().setTitle("EchoChamber");
-            }
-
-            public void onDrawerOpened(View view) {
-                super.onDrawerOpened(view);
-                getActionBar().setTitle("Topics");
-            }
-        };
-
-        drawerLayout.setDrawerListener(drawerToggle);
-        getActionBar().setHomeButtonEnabled(true);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer);
-
-        initDrawerProfile();
-    }
-
-    private void initDrawerProfile() {
-        profileName = (TextView) findViewById(R.id.profile_name);
-        String proName = Profile.getCurrentProfile().getName();
-        profileName.setText(proName);
-
-        profilePic = (ImageView) findViewById(R.id.profile_pic);
-        final Handler handler = new Handler();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Uri proPicUri = Profile.getCurrentProfile().getProfilePictureUri(200, 200);
-                final Bitmap proPic = getImageBitmap(proPicUri.toString());
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        profilePic.setImageBitmap(proPic);
-                    }
-                });
-
-            }
-        }).start();
-    }
-
-    private Bitmap getImageBitmap(String url) {
-        Log.d(TAG, "Downloading profile picture from: " + url);
-        Bitmap bm = null;
-        try {
-            URL aURL = new URL(url);
-            URLConnection conn = aURL.openConnection();
-            conn.connect();
-            InputStream is = conn.getInputStream();
-            BufferedInputStream bis = new BufferedInputStream(is);
-            bm = BitmapFactory.decodeStream(bis);
-            bis.close();
-            is.close();
-        } catch (IOException e) {
-            Log.e(TAG, "Error getting bitmap", e);
-        }
-        return bm;
+        navigationDrawer = new NavigationDrawer(this, getWindow().getDecorView(), "Topics");
+        navigationDrawer.init();
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
-        drawerToggle.syncState();
+        navigationDrawer.getDrawerToggle().syncState();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        drawerToggle.onConfigurationChanged(newConfig);
+        navigationDrawer.getDrawerToggle().onConfigurationChanged(newConfig);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Pass the event to ActionBarDrawerToggle, if it returns
         // true, then it has handled the app icon touch event
-        if (drawerToggle.onOptionsItemSelected(item)) {
+        if (navigationDrawer.getDrawerToggle().onOptionsItemSelected(item)) {
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void logOut() {
-        LoginManager.getInstance().logOut();
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
-    }
+
 }
