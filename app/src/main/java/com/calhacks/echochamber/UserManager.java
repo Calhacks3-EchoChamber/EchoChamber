@@ -42,6 +42,7 @@ public class UserManager {
                 @Override
                 public void run() {
                     profilePic.setImageBitmap(profilePicture);
+                    profilePic.invalidate();
                 }
             });
         } else {
@@ -54,6 +55,7 @@ public class UserManager {
                         @Override
                         public void run() {
                             profilePic.setImageBitmap(profilePicture);
+                            profilePic.invalidate();
                         }
                     });
 

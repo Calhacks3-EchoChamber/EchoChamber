@@ -1,32 +1,41 @@
-package com.calhacks.echochamber;
+package com.calhacks.echochamber.Conversation;
 
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ListView;
 
-import com.calhacks.echochamber.Topic.TestTopics;
-import com.calhacks.echochamber.Topic.Topic;
-import com.calhacks.echochamber.Topic.TopicListAdapter;
+import com.calhacks.echochamber.NavigationDrawer;
+import com.calhacks.echochamber.R;
 
-
-public class MainActivity extends Activity {
-    private static final String TAG = "MainActivity";
+public class ConversationListActivity extends Activity {
+    private static final String TAG = "ConversationList";
+    private ConversationManager conversationManager;
     private NavigationDrawer navigationDrawer;
-    private ListView topicList;
+    private ListView conversationList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_conversation_list);
 
-        navigationDrawer = new NavigationDrawer(this, getWindow().getDecorView(), "Topics");
+        navigationDrawer = new NavigationDrawer(this, getWindow().getDecorView(), "Conversations");
         navigationDrawer.init();
 
-        Topic[] topics = TestTopics.getTopics();
-        topicList = (ListView) findViewById(R.id.topic_list);
-        topicList.setAdapter(new TopicListAdapter(this, topics));
+        conversationManager = ConversationManager.getInstance();
+        Conversation[] conversations = conversationManager.getConversations();
+        Log.d(TAG, "Conversations: " + conversations.length);
+
+        conversationList = (ListView) findViewById(R.id.conversation_list);
+        conversationList.setAdapter(new ConversationListAdapter(this, conversations));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        conversationList.invalidate();
     }
 
     @Override

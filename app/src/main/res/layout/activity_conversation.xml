@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/conversation_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.calhacks.echochamber.Conversation.ConversationActivity">
+    <ListView
+        android:id="@+id/message_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
+        android:paddingBottom="50dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp" />
+    <LinearLayout
+        android:id="@+id/message_entry"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/white" >
+        <EditText
+            android:id="@+id/new_message"
+            android:layout_width="280dp"
+            android:layout_height="45dp"
+            android:maxLength="250"
+            android:hint="Enter message here..." />
+        <Button
+            android:id="@+id/send_message"
+            android:layout_width="fill_parent"
+            android:layout_height="45dp"
+            android:layout_gravity="right"
+            android:text="Send" />
+    </LinearLayout>
+</RelativeLayout>

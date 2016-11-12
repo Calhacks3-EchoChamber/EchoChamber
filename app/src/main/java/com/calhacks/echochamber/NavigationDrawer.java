@@ -13,8 +13,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.calhacks.echochamber.Conversation.ConversationListActivity;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 
@@ -27,10 +29,11 @@ public class NavigationDrawer {
     private UserManager userManager;
     private Activity activity;
     private View view;
-    private String[] drawerItems = new String[]{"Topics", "Messages", "Settings", "Log Out"};
+    private String[] drawerItems = new String[]{"Topics", "Conversations", "Settings", "Log Out"};
     private DrawerLayout drawerLayout;
     private ListView drawerList;
     private ActionBarDrawerToggle drawerToggle;
+    private RelativeLayout profileSquare;
     private ImageView profilePic;
     private TextView profileName;
     private String currentPage;
@@ -41,6 +44,7 @@ public class NavigationDrawer {
         this.currentPage = currentPage;
 
         userManager = UserManager.getInstance();
+        activity.getActionBar().setTitle(currentPage);
         drawerLayout = (DrawerLayout) view.findViewById(R.id.drawer_layout);
         drawerList = (ListView) view.findViewById(R.id.nav_drawer);
 
@@ -48,13 +52,37 @@ public class NavigationDrawer {
         drawerList.setAdapter(new ArrayAdapter<>(activity,
                 R.layout.drawer_list_item, drawerItems));
 
+        profileSquare = (RelativeLayout) view.findViewById(R.id.profile_square);
+        profileSquare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (currentPage.equals("Profile")) {
+                    drawerLayout.closeDrawers();
+                    return;
+                }
+                Intent intent = new Intent(context, ProfileActivity.class);
+                context.startActivity(intent);
+            }
+        });
+
         // Set list click listener
         drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.d(TAG, "Clicked: " + drawerItems[i]);
+                if (drawerItems[i].equals(currentPage)) {
+                    drawerLayout.closeDrawers();
+                    return;
+                }
+
                 if (drawerItems[i].equals("Log Out")) {
                     logOut();
+                } else if (drawerItems[i].equals("Conversations")) {
+                    Intent intent = new Intent(activity, ConversationListActivity.class);
+                    activity.startActivity(intent);
+                } else if (drawerItems[i].equals("Topics")) {
+                    Intent intent = new Intent(activity, MainActivity.class);
+                    activity.startActivity(intent);
                 }
             }
         });
@@ -68,12 +96,12 @@ public class NavigationDrawer {
         ) {
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                activity.getActionBar().setTitle("EchoChamber");
+                activity.getActionBar().setTitle(currentPage);
             }
 
             public void onDrawerOpened(View view) {
                 super.onDrawerOpened(view);
-                activity.getActionBar().setTitle(currentPage);
+                activity.getActionBar().setTitle("Navigation");
             }
         };
 

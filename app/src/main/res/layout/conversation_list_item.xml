@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp" >
+    <TextView
+        android:id="@+id/conversation_name"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:textSize="16dp"
+        android:layout_marginTop="5dp"
+        android:textStyle="bold" />
+    <TextView
+        android:id="@+id/conversation_peek"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:ellipsize="end"
+        android:scrollHorizontally="true"
+        android:maxLines="1" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:paddingBottom="5dp" >
+        <TextView
+            android:id="@+id/conversation_partner"
+            android:layout_width="250dp"
+            android:layout_height="match_parent"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/conversation_time"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:gravity="right"
+            android:textSize="15dp" />
+    </LinearLayout>
+</LinearLayout>

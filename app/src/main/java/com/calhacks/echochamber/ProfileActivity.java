@@ -3,30 +3,35 @@ package com.calhacks.echochamber;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MenuItem;
-import android.widget.ListView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.calhacks.echochamber.Topic.TestTopics;
-import com.calhacks.echochamber.Topic.Topic;
-import com.calhacks.echochamber.Topic.TopicListAdapter;
+import com.facebook.Profile;
 
-
-public class MainActivity extends Activity {
-    private static final String TAG = "MainActivity";
+public class ProfileActivity extends Activity {
+    private UserManager userManager;
     private NavigationDrawer navigationDrawer;
-    private ListView topicList;
+    private ImageView profilePic;
+    private TextView profileName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_profile);
 
-        navigationDrawer = new NavigationDrawer(this, getWindow().getDecorView(), "Topics");
+        userManager = UserManager.getInstance();
+
+        navigationDrawer = new NavigationDrawer(this, getWindow().getDecorView(), "Profile");
         navigationDrawer.init();
 
-        Topic[] topics = TestTopics.getTopics();
-        topicList = (ListView) findViewById(R.id.topic_list);
-        topicList.setAdapter(new TopicListAdapter(this, topics));
+        Handler handler = new Handler();
+        profilePic = (ImageView) findViewById(R.id.profile_page_pic);
+        userManager.setProfilePicture(profilePic, handler);
+
+        profileName = (TextView) findViewById(R.id.profile_page_name);
+        profileName.setText(Profile.getCurrentProfile().getName());
     }
 
     @Override
