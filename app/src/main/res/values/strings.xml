@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">EchoChamber</string>
+    <string name="facebook_app_id">1824206544491625</string>
+    <string name="fb_login_protocol_scheme">fb1824206544491625</string>
+    <string name="drawer_open">Open Drawer</string>
+    <string name="drawer_close">Close Drawer</string>
+</resources>
