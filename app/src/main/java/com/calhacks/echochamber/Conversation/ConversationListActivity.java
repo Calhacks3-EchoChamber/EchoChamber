@@ -21,12 +21,12 @@ public class ConversationListActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation_list);
 
-        navigationDrawer = new NavigationDrawer(this, getWindow().getDecorView(), "Conversations");
+        navigationDrawer = new NavigationDrawer(this, getWindow().getDecorView(),
+                "Past Conversations");
         navigationDrawer.init();
 
         conversationManager = ConversationManager.getInstance();
-        Conversation[] conversations = conversationManager.getConversations();
-        Log.d(TAG, "Conversations: " + conversations.length);
+        Conversation[] conversations = conversationManager.getPastConversations();
 
         conversationList = (ListView) findViewById(R.id.conversation_list);
         conversationList.setAdapter(new ConversationListAdapter(this, conversations));

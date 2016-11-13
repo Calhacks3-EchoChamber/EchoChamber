@@ -15,8 +15,12 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.calhacks.echochamber.Conversation.Conversation;
+import com.calhacks.echochamber.Conversation.ConversationActivity;
 import com.calhacks.echochamber.Conversation.ConversationListActivity;
+import com.calhacks.echochamber.Conversation.ConversationManager;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 
@@ -27,9 +31,13 @@ import com.facebook.login.LoginManager;
 public class NavigationDrawer {
     private static final String TAG = "NavigationDrawer";
     private UserManager userManager;
+    private ConversationManager conversationManager;
     private Activity activity;
     private View view;
-    private String[] drawerItems = new String[]{"Topics", "Conversations", "Settings", "Log Out"};
+    private String[] drawerItems = new String[]{"Trending Topics", "Current Conversation",
+            "Past Conversations", "Settings", "Log Out"};
+    private String[] drawerIcons = new String[]{"{fa-globe}    Topics", "{fa-comment-o}    Current Conversation",
+            "{fa-comments-o}    Past Conversations", "{fa-cogs}    Settings", "{fa-sign-out}    Log Out"};
     private DrawerLayout drawerLayout;
     private ListView drawerList;
     private ActionBarDrawerToggle drawerToggle;
@@ -44,13 +52,14 @@ public class NavigationDrawer {
         this.currentPage = currentPage;
 
         userManager = UserManager.getInstance();
+        conversationManager = ConversationManager.getInstance();
         activity.getActionBar().setTitle(currentPage);
         drawerLayout = (DrawerLayout) view.findViewById(R.id.drawer_layout);
         drawerList = (ListView) view.findViewById(R.id.nav_drawer);
 
         // Adapter for Nav Drawer ListView
         drawerList.setAdapter(new ArrayAdapter<>(activity,
-                R.layout.drawer_list_item, drawerItems));
+                R.layout.drawer_list_item, drawerIcons));
 
         profileSquare = (RelativeLayout) view.findViewById(R.id.profile_square);
         profileSquare.setOnClickListener(new View.OnClickListener() {
@@ -69,7 +78,6 @@ public class NavigationDrawer {
         drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.d(TAG, "Clicked: " + drawerItems[i]);
                 if (drawerItems[i].equals(currentPage)) {
                     drawerLayout.closeDrawers();
                     return;
@@ -77,12 +85,22 @@ public class NavigationDrawer {
 
                 if (drawerItems[i].equals("Log Out")) {
                     logOut();
-                } else if (drawerItems[i].equals("Conversations")) {
+                } else if (drawerItems[i].equals("Past Conversations")) {
                     Intent intent = new Intent(activity, ConversationListActivity.class);
                     activity.startActivity(intent);
-                } else if (drawerItems[i].equals("Topics")) {
+                } else if (drawerItems[i].equals("Trending Topics")) {
                     Intent intent = new Intent(activity, MainActivity.class);
                     activity.startActivity(intent);
+                } else if (drawerItems[i].equals("Current Conversation")) {
+                    Conversation currentConversation = conversationManager.getCurrentConversation();
+                    if (currentConversation == null) {
+                        Toast.makeText(context, "There is no current conversation",
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        Intent intent = new Intent(context, ConversationActivity.class);
+                        intent.putExtra("conversation", currentConversation.getChannelName());
+                        context.startActivity(intent);
+                    }
                 }
             }
         });
@@ -112,6 +130,7 @@ public class NavigationDrawer {
     }
 
     public void init() {
+        if (Profile.getCurrentProfile() == null) return;
         profileName = (TextView) view.findViewById(R.id.profile_name);
         String proName = Profile.getCurrentProfile().getName();
         profileName.setText(proName);

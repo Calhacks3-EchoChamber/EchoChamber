@@ -5,26 +5,29 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.calhacks.echochamber.MainActivity;
 import com.calhacks.echochamber.Message.Message;
 import com.calhacks.echochamber.Message.MessageListAdapter;
+import com.calhacks.echochamber.PubHubManager;
 import com.calhacks.echochamber.R;
 
 import java.util.Date;
 
-public class ConversationActivity extends Activity {
+public class ConversationActivity extends Activity implements ConversationListener {
     private static final String TAG = "ConversationActivity";
     private ConversationManager conversationManager;
+    private PubHubManager pubHubManager;
     private Conversation conversation;
     private ListView messageList;
     private EditText newMessage;
     private Button sendMessage;
+    private LinearLayout messageEntry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +35,7 @@ public class ConversationActivity extends Activity {
         setContentView(R.layout.activity_conversation);
 
         conversationManager = ConversationManager.getInstance();
+        pubHubManager = PubHubManager.getInstance(this);
 
         if (getIntent() == null || !getIntent().hasExtra("conversation")) {
             Log.e(TAG, "ConversationActivity has no corresponding conversation, exiting");
@@ -39,8 +43,9 @@ public class ConversationActivity extends Activity {
             startActivity(intent);
         }
 
-        int conversationID = getIntent().getIntExtra("conversation", 0);
-        conversation = conversationManager.getConversation(conversationID);
+        String channelName = getIntent().getStringExtra("conversation");
+        conversation = conversationManager.getConversation(channelName);
+        pubHubManager.addListener(this);
 
         if (conversation == null) {
             Log.e(TAG, "ConversationActivity has no corresponding conversation, exiting");
@@ -48,13 +53,17 @@ public class ConversationActivity extends Activity {
             startActivity(intent);
         }
 
-        getActionBar().setTitle(conversation.getTopic().getTopic());
+        getActionBar().setTitle(conversation.getTopic().getTopicHeader());
 
         messageList = (ListView) findViewById(R.id.message_list);
         messageList.setAdapter(new MessageListAdapter(this, conversation.getMessages()));
 
         newMessage = (EditText) findViewById(R.id.new_message);
         sendMessage = (Button) findViewById(R.id.send_message);
+
+        messageEntry = (LinearLayout) findViewById(R.id.message_entry);
+        messageEntry.setVisibility(conversation.isActive() ? View.VISIBLE : View.INVISIBLE);
+
         sendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -70,6 +79,9 @@ public class ConversationActivity extends Activity {
         conversation.addMessage(message);
         newMessage.setText("");
 
+        // Submit message to PubHub channel
+        pubHubManager.sendMessage(conversation, message);
+
         // Unfocus EditText and remove keyboard
         newMessage.clearFocus();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -78,9 +90,29 @@ public class ConversationActivity extends Activity {
         messageList.setAdapter(new MessageListAdapter(this, conversation.getMessages()));
         messageList.invalidate();
 
+        // Check if conversation has been set to inactive
+        messageEntry.setVisibility(conversation.isActive() ? View.VISIBLE : View.INVISIBLE);
+        messageEntry.invalidate();
+    }
 
+    public Conversation getConversation() {
+        return conversation;
+    }
 
-        Log.d(TAG, "Submitted message: " + messageContent);
-        // TODO: Submit to server
+    @Override
+    public void onMessage() {
+        if (!conversation.isActive()) {
+            pubHubManager.removeListener(this);
+            return;
+        }
+
+        // Force list refresh so message shows up
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                messageList.setAdapter(new MessageListAdapter(ConversationActivity.this, conversation.getMessages()));
+                messageList.invalidate();
+            }
+        });
     }
 }

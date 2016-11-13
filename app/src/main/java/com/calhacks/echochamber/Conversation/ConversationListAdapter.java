@@ -56,7 +56,7 @@ public class ConversationListAdapter extends BaseAdapter {
         View rowView = layoutInflater.inflate(R.layout.conversation_list_item, null);
 
         TextView conversationName = (TextView) rowView.findViewById(R.id.conversation_name);
-        conversationName.setText(topic.getTopic());
+        conversationName.setText(topic.getTopicHeader());
 
         TextView conversationPeek = (TextView) rowView.findViewById(R.id.conversation_peek);
         Message recentMessage = conversation.getLastMessage();
@@ -88,7 +88,7 @@ public class ConversationListAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, ConversationActivity.class);
-                intent.putExtra("conversation", conversation.getID());
+                intent.putExtra("conversation", conversation.getChannelName());
                 context.startActivity(intent);
             }
         });

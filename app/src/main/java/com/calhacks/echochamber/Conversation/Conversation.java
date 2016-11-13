@@ -6,6 +6,7 @@ import com.calhacks.echochamber.Topic.Topic;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -13,31 +14,22 @@ import java.util.TreeMap;
  */
 
 public class Conversation {
-    private int ID = -1;
     private Topic topic;
     private String channelName;
     private String partnerName;
-    private String partnerID;
+    private String partnerLocation;
+    private String partnerProfile;
     private TreeMap<Date, Message> messages;
     private Date createdDate;
     private boolean active;
+    private boolean firstContact = false;
 
-    public Conversation(Topic topic, String channelName, String partnerName, String partnerID) {
+    public Conversation(Topic topic, String channelName) {
         this.topic = topic;
         this.channelName = channelName;
-        this.partnerName = partnerName;
-        this.partnerID = partnerID;
         messages = new TreeMap<>();
         createdDate = new Date();
         active = true;
-    }
-
-    public int getID() {
-        return ID;
-    }
-
-    public void setID(int ID) {
-        this.ID = ID;
     }
 
     public Topic getTopic() {
@@ -52,8 +44,24 @@ public class Conversation {
         return partnerName;
     }
 
-    public String getPartnerID() {
-        return partnerID;
+    public void setPartnerName(String partnerName) {
+        this.partnerName = partnerName;
+    }
+
+    public String getPartnerLocation() {
+        return partnerLocation;
+    }
+
+    public void setPartnerLocation(String partnerLocation) {
+        this.partnerLocation = partnerLocation;
+    }
+
+    public String getPartnerProfile() {
+        return partnerProfile;
+    }
+
+    public void setPartnerProfile(String partnerProfile) {
+        this.partnerProfile = partnerProfile;
     }
 
     // Returns messages organized in chronological order
@@ -76,6 +84,15 @@ public class Conversation {
         }
     }
 
+    public void deleteMessage(Message message) {
+        for (Map.Entry<Date, Message> entry : messages.entrySet()) {
+            if (message == entry.getValue()) {
+                messages.remove(entry.getKey());
+                return;
+            }
+        }
+    }
+
     // Gets time of most recently sent message
     public Date getLastSent() {
         if (messages.isEmpty()) {
@@ -91,11 +108,19 @@ public class Conversation {
         return messages.lastEntry().getValue();
     }
 
-    public boolean getActive() {
+    public boolean isActive() {
         return active;
     }
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public boolean isFirstContact() {
+        return firstContact;
+    }
+
+    public void setFirstContact(boolean firstContact) {
+        this.firstContact = firstContact;
     }
 }

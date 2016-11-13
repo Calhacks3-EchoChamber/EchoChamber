@@ -17,6 +17,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+    }
 }
 
 dependencies {
@@ -26,4 +29,8 @@ dependencies {
     })
     testCompile 'junit:junit:4.12'
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
+    compile group: 'com.pubnub', name: 'pubnub', version: '4.2.0'
+    compile 'com.android.support:cardview-v7:24.0.+'
+    compile 'com.joanzapata.iconify:android-iconify-fontawesome:2.2.2'
+    compile 'com.loopj.android:android-async-http:1.4.9'
 }

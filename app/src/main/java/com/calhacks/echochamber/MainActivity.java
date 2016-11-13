@@ -9,10 +9,14 @@ import android.widget.ListView;
 import com.calhacks.echochamber.Topic.TestTopics;
 import com.calhacks.echochamber.Topic.Topic;
 import com.calhacks.echochamber.Topic.TopicListAdapter;
+import com.calhacks.echochamber.Topic.TopicManager;
+import com.joanzapata.iconify.Iconify;
+import com.joanzapata.iconify.fonts.FontAwesomeModule;
 
 
 public class MainActivity extends Activity {
     private static final String TAG = "MainActivity";
+    private TopicManager topicManager;
     private NavigationDrawer navigationDrawer;
     private ListView topicList;
 
@@ -20,13 +24,14 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Iconify.with(new FontAwesomeModule());
 
-        navigationDrawer = new NavigationDrawer(this, getWindow().getDecorView(), "Topics");
+        navigationDrawer = new NavigationDrawer(this, getWindow().getDecorView(), "Trending Topics");
         navigationDrawer.init();
 
-        Topic[] topics = TestTopics.getTopics();
+        topicManager = TopicManager.getInstance();
         topicList = (ListView) findViewById(R.id.topic_list);
-        topicList.setAdapter(new TopicListAdapter(this, topics));
+        topicList.setAdapter(new TopicListAdapter(this, topicManager.getTopics()));
     }
 
     @Override

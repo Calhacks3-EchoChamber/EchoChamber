@@ -10,23 +10,25 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.calhacks.echochamber.LoginActivity">
 
-    <TextView
-        android:text="Echo Chamber"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="120dp"
-        android:id="@+id/textView"
-        android:textSize="32sp" />
-
     <com.facebook.login.widget.LoginButton
         android:id="@+id/facebook_login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="115dp"
+        android:layout_marginTop="160dp"
         android:layout_below="@+id/textView"
+        android:textSize="20dp"
         android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:text="Echo Chamber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="160dp"
+        android:id="@+id/textView"
+        android:textSize="42sp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="Gotham" />
 
 </RelativeLayout>

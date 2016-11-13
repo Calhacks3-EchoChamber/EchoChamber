@@ -3,4 +3,10 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="nav_drawer">#303030</color>
+    <color name="nav_profile">#4a4a4a</color>
+    <color name="action_bar">#54759e</color>
+    <color name="agree_button">#9E9E9E</color>
+    <color name="disagree_button">#9E9E9E</color>
+    <color name="app_background">#7f8c8d</color>
 </resources>

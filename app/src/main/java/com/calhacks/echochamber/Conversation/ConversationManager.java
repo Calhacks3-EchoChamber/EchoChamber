@@ -2,12 +2,13 @@ package com.calhacks.echochamber.Conversation;
 
 import android.util.Log;
 
-import junit.framework.Test;
+import com.calhacks.echochamber.PubHubManager;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.PriorityQueue;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
 
@@ -21,13 +22,11 @@ public class ConversationManager {
     private static final int MIN_ID = 1;
     private static ConversationManager conversationManager = null;
     private TreeMap<Long, Conversation> conversations;
-    private HashMap<Integer, Conversation> convID;
 
 
     // Enforce Singleton
     protected ConversationManager() {
         conversations = new TreeMap<>(Collections.reverseOrder());
-        convID = new HashMap<>();
 
         // For testing purposes
         Conversation[] testConversations = TestConversations.getConversations();
@@ -49,17 +48,22 @@ public class ConversationManager {
         if (!conversations.containsValue(conversation)) {
             conversations.put(conversation.getLastSent().getTime(), conversation);
         }
-        if (conversation.getID() == -1) {
-            Random rand = new Random();
-            int newID = rand.nextInt((MAX_ID - MIN_ID) + 1) + MIN_ID;
-            conversation.setID(newID);
-            convID.put(conversation.getID(), conversation);
-        }
     }
 
-    public Conversation getConversation(int ID) {
-        if (convID.containsKey(ID)) {
-            return convID.get(ID);
+    public Conversation getConversation(String channelName) {
+        for (Conversation conversation : conversations.values()) {
+            if (conversation.getChannelName().equals(channelName)) {
+                return conversation;
+            }
+        }
+        return null;
+    }
+
+    public Conversation getCurrentConversation() {
+        for (Conversation conversation : conversations.values()) {
+            if (conversation.isActive()) {
+                return conversation;
+            }
         }
         return null;
     }
@@ -70,4 +74,34 @@ public class ConversationManager {
         return conversationList;
     }
 
+    public Conversation[] getPastConversations() {
+        ArrayList<Conversation> conversationList = new ArrayList<>();
+        for (Conversation conversation : conversations.values()) {
+            if (!conversation.isActive()) {
+                conversationList.add(conversation);
+            }
+        }
+        Conversation[] conversationArray = new Conversation[conversationList.size()];
+        conversationList.toArray(conversationArray);
+        return conversationArray;
+    }
+
+    public void removeConversation(Conversation conversation) {
+        Iterator<Map.Entry<Long, Conversation>> iter = conversations.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry<Long, Conversation> entry = iter.next();
+            if (entry == conversation) {
+                iter.remove();
+            }
+        }
+    }
+
+    public void deactivateConversations(Conversation conversation) {
+        for (Conversation c : conversations.values()) {
+            if (c != conversation) {
+                c.setActive(false);
+            }
+        }
+        conversation.setActive(true);
+    }
 }

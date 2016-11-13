@@ -4,4 +4,6 @@
     <string name="fb_login_protocol_scheme">fb1824206544491625</string>
     <string name="drawer_open">Open Drawer</string>
     <string name="drawer_close">Close Drawer</string>
+    <string name="pubnub_subscribe">sub-c-ce924392-a90a-11e6-a397-02ee2ddab7fe</string>
+    <string name="pubnub_publish">pub-c-7b3c225d-2ced-499b-8b49-ca20198737dc</string>
 </resources>

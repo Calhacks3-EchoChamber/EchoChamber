@@ -10,6 +10,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -20,6 +21,7 @@ import com.facebook.Profile;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.loopj.android.http.RequestParams;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -39,7 +41,7 @@ public class LoginActivity extends Activity {
 
         callbackManager = CallbackManager.Factory.create();
         facebookLogin = (LoginButton) findViewById(R.id.facebook_login_button);
-        facebookLogin.setReadPermissions("email");
+        facebookLogin.setReadPermissions("public_profile", "user_friends", "user_location");
 
         Log.d(TAG, "Registering Callback");
         facebookLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -48,6 +50,7 @@ public class LoginActivity extends Activity {
                 // TODO: Success
                 Log.d(TAG, "Success!");
                 String userID = loginResult.getAccessToken().getUserId();
+                if (userID == null || userID.isEmpty()) return;
                 loginUser(userID);
             }
 
@@ -59,8 +62,9 @@ public class LoginActivity extends Activity {
 
             @Override
             public void onError(FacebookException error) {
-                // TODO: Error
                 Log.e(TAG, "Error logging in user!");
+                Toast.makeText(getApplicationContext(),
+                        "Failed to login to Facebook, try again later", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -78,6 +82,9 @@ public class LoginActivity extends Activity {
 
     private void loginUser(String userID) {
         Log.d(TAG, "Logging in user with ID: " + userID);
+        RequestParams params = new RequestParams();
+        params.put("uid", userID);
+        NetworkManager.userLogin(params);
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }

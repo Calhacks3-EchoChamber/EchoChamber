@@ -8,12 +8,14 @@ import java.io.Serializable;
 
 public class Topic {
     private int id;
-    private String topic;
+    private String topicHeader;
+    private String topicBody;
     private int count = 0;
 
-    public Topic(int id, String topic, int count) {
+    public Topic(int id, String topicHeader, String topicBody, int count) {
         this.id = id;
-        this.topic = topic;
+        this.topicHeader = topicHeader;
+        this.topicBody = topicBody;
         this.count = count;
     }
 
@@ -21,9 +23,11 @@ public class Topic {
         return id;
     }
 
-    public String getTopic() {
-        return topic;
+    public String getTopicHeader() {
+        return topicHeader;
     }
+
+    public String getTopicBody() { return topicBody; }
 
     public int getCount() {
         return count;
