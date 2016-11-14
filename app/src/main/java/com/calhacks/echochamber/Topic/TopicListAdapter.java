@@ -71,13 +71,13 @@ public class TopicListAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
         Topic topic = topicList[position];
         final View rowView = layoutInflater.inflate(R.layout.topic_list_item, null);
-        CardView topicCard = (CardView) rowView.findViewById(R.id.topic_card);
+        final CardView topicCard = (CardView) rowView.findViewById(R.id.topic_card);
         final LinearLayout topicButtons = (LinearLayout) rowView.findViewById(R.id.topic_buttons);
         if (getPrevPosition() == position) {
             topicCard.setLayoutParams(new AbsListView.LayoutParams(parent.getWidth(), 500));
             ResizeAnimation resizeAnimation = new ResizeAnimation(
                     topicCard,
-                    -350,
+                    -340,
                     500
             );
             resizeAnimation.setDuration(500);
@@ -108,8 +108,8 @@ public class TopicListAdapter extends BaseAdapter {
         } else if (getSelectedItem() == position) {
             ResizeAnimation resizeAnimation = new ResizeAnimation(
                     topicCard,
-                    350,
-                    150
+                    340,
+                    160
             );
             resizeAnimation.setDuration(500);
             resizeAnimation.setAnimationListener(new Animation.AnimationListener() {
@@ -124,6 +124,7 @@ public class TopicListAdapter extends BaseAdapter {
                 @Override
                 public void onAnimationRepeat(Animation animation) {}
             });
+
             topicCard.startAnimation(resizeAnimation);
 
             rowView.setOnClickListener(new View.OnClickListener() {
@@ -136,7 +137,7 @@ public class TopicListAdapter extends BaseAdapter {
                 }
             });
         } else {
-            topicCard.setLayoutParams(new AbsListView.LayoutParams(parent.getWidth(), 150));
+            topicCard.setLayoutParams(new AbsListView.LayoutParams(parent.getWidth(), 160));
             rowView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

@@ -6,6 +6,14 @@
     android:layout_height="match_parent"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.calhacks.echochamber.Conversation.ConversationActivity">
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="100dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:elevation="10dp"
+        android:focusableInTouchMode="true" />
     <ListView
         android:id="@+id/message_list"
         android:layout_width="match_parent"
@@ -16,21 +24,41 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp" />
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="50dp"
+        android:weightSum="1" >
+        <View android:layout_weight="0.25"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <Button
+            android:layout_weight="0.75"
+            android:id="@+id/exit_conversation"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:gravity="center"
+            android:text="Exit" />
+    </LinearLayout>
+    <LinearLayout
         android:id="@+id/message_entry"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
-        android:background="@android:color/white" >
+        android:background="@android:color/white"
+        android:weightSum="1">
         <EditText
+            android:layout_weight="0.25"
             android:id="@+id/new_message"
-            android:layout_width="280dp"
+            android:layout_width="match_parent"
             android:layout_height="45dp"
             android:maxLength="250"
             android:hint="Enter message here..." />
         <Button
+            android:layout_weight="0.75"
             android:id="@+id/send_message"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_gravity="right"
             android:text="Send" />

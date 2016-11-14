@@ -2,18 +2,23 @@ package com.calhacks.echochamber.Conversation;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import com.calhacks.echochamber.MainActivity;
 import com.calhacks.echochamber.Message.Message;
 import com.calhacks.echochamber.Message.MessageListAdapter;
+import com.calhacks.echochamber.PostConversationActivity;
 import com.calhacks.echochamber.PubHubManager;
 import com.calhacks.echochamber.R;
 
@@ -26,6 +31,7 @@ public class ConversationActivity extends Activity implements ConversationListen
     private Conversation conversation;
     private ListView messageList;
     private EditText newMessage;
+    private Button exitButton;
     private Button sendMessage;
     private LinearLayout messageEntry;
 
@@ -43,7 +49,7 @@ public class ConversationActivity extends Activity implements ConversationListen
             startActivity(intent);
         }
 
-        String channelName = getIntent().getStringExtra("conversation");
+        final String channelName = getIntent().getStringExtra("conversation");
         conversation = conversationManager.getConversation(channelName);
         pubHubManager.addListener(this);
 
@@ -56,7 +62,20 @@ public class ConversationActivity extends Activity implements ConversationListen
         getActionBar().setTitle(conversation.getTopic().getTopicHeader());
 
         messageList = (ListView) findViewById(R.id.message_list);
+        messageList.setSelector(new ColorDrawable(Color.TRANSPARENT));
         messageList.setAdapter(new MessageListAdapter(this, conversation.getMessages()));
+
+        exitButton = (Button) findViewById(R.id.exit_conversation);
+        exitButton.setVisibility(conversation.isActive() ? View.VISIBLE : View.INVISIBLE);
+        exitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), PostConversationActivity.class);
+                intent.putExtra("channelName", channelName);
+                intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
+                startActivity(intent);
+            }
+        });
 
         newMessage = (EditText) findViewById(R.id.new_message);
         sendMessage = (Button) findViewById(R.id.send_message);
@@ -93,6 +112,9 @@ public class ConversationActivity extends Activity implements ConversationListen
         // Check if conversation has been set to inactive
         messageEntry.setVisibility(conversation.isActive() ? View.VISIBLE : View.INVISIBLE);
         messageEntry.invalidate();
+
+        exitButton.setVisibility(conversation.isActive() ? View.VISIBLE : View.INVISIBLE);
+        exitButton.invalidate();
     }
 
     public Conversation getConversation() {
@@ -112,6 +134,7 @@ public class ConversationActivity extends Activity implements ConversationListen
             public void run() {
                 messageList.setAdapter(new MessageListAdapter(ConversationActivity.this, conversation.getMessages()));
                 messageList.invalidate();
+                messageList.setSelection(conversation.getMessages().length - 1);
             }
         });
     }

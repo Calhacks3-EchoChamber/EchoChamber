@@ -75,7 +75,8 @@ public class PubHubManager {
                 }
 
                 JsonNode messageJSON = message.getMessage();
-                if (!messageJSON.has("message") && !messageJSON.has("first_name")) {
+                if (!messageJSON.has("message") && !messageJSON.has("first_name")
+                        && !messageJSON.has("terminated")) {
                     Log.d(TAG, "No message contained in PubNub message");
                     return;
                 }
@@ -88,7 +89,7 @@ public class PubHubManager {
                     }
                 }
 
-                // Message is either conversation initialization or a chat message
+                // Message is either conversation initialization, chat message, or termination
                 if (messageJSON.has("first_name") || messageJSON.has("location")
                         || messageJSON.has("profile_url")) {
                     String firstName = messageJSON.get("first_name").asText("Anonymous");
@@ -101,10 +102,17 @@ public class PubHubManager {
 
                     // Only open up new chat window if this user didn't initiate
                     if (!conversation.isFirstContact()) {
+                        sendInitial(conversation);
                         Intent intent = new Intent(context, ConversationActivity.class);
                         intent.putExtra("conversation", conversation.getChannelName());
                         context.startActivity(intent);
                     }
+                } else if (messageJSON.has("terminated")) {
+                    conversation.setActive(false);
+                    Intent intent = new Intent(context, PostConversationActivity.class);
+                    intent.putExtra("channelName", channelName);
+                    intent.putExtra("receiver", true);
+                    context.startActivity(intent);
                 } else {
                     String messageString = messageJSON.get("message").asText();
                     Message newMessage = new Message(new Date(), false, messageString);
@@ -197,6 +205,9 @@ public class PubHubManager {
         messageObj.put("location", "California");
         messageObj.put("profile_url", Profile.getCurrentProfile().getProfilePictureUri(200, 200).toString());
 
+        String userID = Profile.getCurrentProfile().getId();
+        messageObj.put("uid", userID.substring(0, 6));
+
         pubNub.publish()
                 .message(messageObj)
                 .channel(conversation.getChannelName())
@@ -207,6 +218,29 @@ public class PubHubManager {
                         if (status.isError()) {
                             // Failed to start conversation so abort it
                             abortConversation(conversation, true);
+                        }
+                    }
+                });
+    }
+
+    public void leaveConversation(Conversation conversation) {
+        String channelName = conversation.getChannelName();
+
+        JsonNodeFactory factory = JsonNodeFactory.instance;
+        ObjectNode messageObj = factory.objectNode();
+        messageObj.put("terminated", true);
+        String userID = Profile.getCurrentProfile().getId();
+        messageObj.put("uid", userID.substring(0, 6));
+
+        pubNub.publish()
+                .message(messageObj)
+                .channel(channelName)
+                .shouldStore(false)
+                .async(new PNCallback<PNPublishResult>() {
+                    @Override
+                    public void onResponse(PNPublishResult result, PNStatus status) {
+                        if (status.isError()) {
+                            Log.e(TAG, "Failed to alert other user of leaving");
                         }
                     }
                 });

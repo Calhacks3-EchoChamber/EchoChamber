@@ -4,7 +4,7 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/topic_card"
     android:layout_width="match_parent"
-    android:layout_height="150px"
+    android:layout_height="160px"
     card_view:cardCornerRadius="4dp"
     android:background="@android:color/white" >
     <LinearLayout
@@ -15,8 +15,8 @@
         <TextView
             android:id="@+id/topic_item_header"
             android:layout_width="match_parent"
-            android:layout_height="110px"
-            android:paddingTop="20px"
+            android:layout_height="120px"
+            android:paddingTop="30px"
             android:paddingLeft="10dp"
             android:textSize="16dp"
             android:layout_alignParentTop="true"
@@ -50,7 +50,7 @@
                     android:minWidth="230px"
                     android:textSize="18dp"
                     android:layout_gravity="bottom"
-                    android:layout_marginLeft="60dp"
+                    android:layout_marginLeft="80dp"
                     android:layout_marginBottom="5dp"
                     style="@style/Widget.AppCompat.Button.Colored"
                     android:textColor="#fff"
@@ -63,7 +63,7 @@
                     android:layout_height="120px"
                     android:minWidth="230px"
                     android:textSize="18dp"
-                    android:layout_marginLeft="50dp"
+                    android:layout_marginLeft="60dp"
                     android:layout_marginBottom="5dp"
                     android:layout_gravity="bottom"
                     style="@style/Widget.AppCompat.Button.Colored"

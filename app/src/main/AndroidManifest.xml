@@ -49,7 +49,9 @@
         <activity android:name=".Conversation.ConversationActivity" />
         <activity android:name=".Conversation.ConversationListActivity" />
         <activity android:name=".ProfileActivity" />
-        <activity android:name=".Conversation.PendingConversationActivity"></activity>
+        <activity android:name=".Conversation.PendingConversationActivity" />
+        <activity android:name=".PostConversationActivity"
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar" />
     </application>
 
 </manifest>

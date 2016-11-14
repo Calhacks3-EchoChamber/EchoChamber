@@ -46,22 +46,25 @@ public class UserManager {
                 }
             });
         } else {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Uri proPicUri = Profile.getCurrentProfile().getProfilePictureUri(200, 200);
-                    profilePicture = getImageBitmap(proPicUri.toString());
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            profilePic.setImageBitmap(profilePicture);
-                            profilePic.invalidate();
-                        }
-                    });
-
-                }
-            }).start();
+            setProfilePicture(profilePic, handler,
+                    Profile.getCurrentProfile().getProfilePictureUri(200, 200).toString());
         }
+    }
+
+    public void setProfilePicture(final ImageView profilePic, final Handler handler, final String url) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final Bitmap proPic = getImageBitmap(url);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        profilePic.setImageBitmap(proPic);
+                        profilePic.invalidate();
+                    }
+                });
+            }
+        }).start();
     }
 
     private Bitmap getImageBitmap(String url) {

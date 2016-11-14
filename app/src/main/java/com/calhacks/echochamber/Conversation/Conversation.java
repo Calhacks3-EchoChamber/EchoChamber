@@ -30,6 +30,7 @@ public class Conversation {
         messages = new TreeMap<>();
         createdDate = new Date();
         active = true;
+        partnerProfile = "";
     }
 
     public Topic getTopic() {

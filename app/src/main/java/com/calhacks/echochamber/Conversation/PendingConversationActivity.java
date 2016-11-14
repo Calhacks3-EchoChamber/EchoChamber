@@ -137,6 +137,7 @@ public class PendingConversationActivity extends Activity {
     private void createNewConversation(String channelName, Topic topic) {
         conversation = new Conversation(topic, channelName);
         conversationManager.addConversation(conversation);
+        // Make sure this conversation is the only active one
         conversationManager.deactivateConversations(conversation);
 
         // Subscribe to channel so we can get notified when user joins + new messages

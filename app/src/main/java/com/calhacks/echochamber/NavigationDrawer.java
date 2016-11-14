@@ -36,8 +36,8 @@ public class NavigationDrawer {
     private View view;
     private String[] drawerItems = new String[]{"Trending Topics", "Current Conversation",
             "Past Conversations", "Settings", "Log Out"};
-    private String[] drawerIcons = new String[]{"{fa-globe}    Topics", "{fa-comment-o}    Current Conversation",
-            "{fa-comments-o}    Past Conversations", "{fa-cogs}    Settings", "{fa-sign-out}    Log Out"};
+    private String[] drawerIcons = new String[]{"{fa-globe}    Topics", "{fa-comments-o}    Current Conversation",
+            "{fa-history}    Past Conversations", "{fa-cogs}    Settings", "{fa-sign-out}    Log Out"};
     private DrawerLayout drawerLayout;
     private ListView drawerList;
     private ActionBarDrawerToggle drawerToggle;
